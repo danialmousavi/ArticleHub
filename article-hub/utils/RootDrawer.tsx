@@ -1,16 +1,49 @@
+// utils/RootDrawer.tsx
 import HomeScreen from "../screens/HomeScreen";
 import ArticlesScreen from "../screens/ArticlesScreen";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
-const RootDrawer=()=>{
-    const drawer=createDrawerNavigator();
-    return(
-        <>
-            <drawer.Navigator>
-                <drawer.Screen name="خانه" component={HomeScreen}/>
-                <drawer.Screen name="مقالات" component={ArticlesScreen}/>
-            </drawer.Navigator>
-        </>
-    )
-}
-export default RootDrawer
+type RootDrawerParamList = {
+  خانه: undefined;
+  مقالات: undefined;
+};
+
+const RootDrawer = () => {
+  const Drawer = createDrawerNavigator<RootDrawerParamList>();
+
+  return (
+    <Drawer.Navigator
+      screenOptions={({ navigation }) => ({
+        drawerPosition: 'right',
+        headerTitleAlign: 'left',
+        headerLeft: () => null,
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
+            <Text style={styles.menuIcon}>☰</Text>
+          </TouchableOpacity>
+        ),
+        drawerLabelStyle: {
+          textAlign: 'right',
+          writingDirection: 'rtl',
+          fontSize: 16,
+        },
+      })}
+    >
+      <Drawer.Screen name="خانه" component={HomeScreen} />
+      <Drawer.Screen name="مقالات" component={ArticlesScreen} />
+    </Drawer.Navigator>
+  );
+};
+
+const styles = StyleSheet.create({
+  menuButton: {
+    marginRight: 15,
+    padding: 8,
+  },
+  menuIcon: {
+    fontSize: 24,
+  },
+});
+
+export default RootDrawer;
