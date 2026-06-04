@@ -6,9 +6,9 @@ import { TouchableOpacity, Text, StyleSheet, I18nManager } from "react-native";
 import LoginScreen from "../screens/Auth/Login";
 
 type RootDrawerParamList = {
-  خانه: undefined;
-  مقالات: undefined;
-  ورود: undefined;
+  Home: undefined;
+  Articles: undefined;
+  Login: undefined;
 };
 
 const RootDrawer = () => {
@@ -17,30 +17,39 @@ const RootDrawer = () => {
   return (
     <Drawer.Navigator
       screenOptions={({ navigation }) => ({
-        drawerPosition: 'right',
-        headerTitleAlign: 'center',
+        drawerPosition: "right",
+        headerTitleAlign: "center",
         headerTitleStyle: {
-          fontFamily: 'VasirBold',
+          fontFamily: "VasirBold",
         },
         headerLeft: () => (
-          <TouchableOpacity 
-            onPress={() => navigation.openDrawer()} 
-            style={[styles.menuButton, I18nManager.isRTL && styles.menuButtonRTL]}
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={[
+              styles.menuButton,
+              I18nManager.isRTL && styles.menuButtonRTL,
+            ]}
           >
             <Text style={styles.menuIcon}>☰</Text>
           </TouchableOpacity>
         ),
         headerRight: () => null,
         drawerLabelStyle: {
-          textAlign: 'right',
+          textAlign: "right",
           fontSize: 16,
           fontFamily: "VasirBold",
         },
       })}
     >
-      <Drawer.Screen name="خانه" component={HomeScreen} />
-      <Drawer.Screen name="مقالات" component={ArticlesScreen} />
-      <Drawer.Screen name="ورود" component={LoginScreen} />
+      <Drawer.Screen name="Home" component={HomeScreen} options={{
+        title:"خانه"
+      }} />
+      <Drawer.Screen name="Articles" component={ArticlesScreen} options={{
+        title:"مقالات"
+      }} />
+      <Drawer.Screen name="Login" component={LoginScreen} options={{
+        title:"ورود"
+      }}/>
     </Drawer.Navigator>
   );
 };

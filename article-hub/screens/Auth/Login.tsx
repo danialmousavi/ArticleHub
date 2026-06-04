@@ -1,11 +1,22 @@
 // screens/LoginScreen.tsx
-import { View, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator, I18nManager } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { useForm, Controller } from 'react-hook-form';
-import { useState } from 'react';
-import RTLText from '../../components/RTLText';
-import RTLTextInput from '../../components/RTLTextInput';
-
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { useForm, Controller } from "react-hook-form";
+import {  useState } from "react";
+import RTLText from "../../components/RTLText";
+import RTLTextInput from "../../components/RTLTextInput";
+import { LoginType } from "../../utils/types/Auth";
+import { AuthLogin } from "../../services/auth/AuthLogin";
+import { useNavigation } from '@react-navigation/native';
 type FormData = {
   username: string;
   password: string;
@@ -14,34 +25,51 @@ type FormData = {
 const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigation=useNavigation<any>();
+
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    resetField
   } = useForm<FormData>({
     defaultValues: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
   });
-
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: LoginType) => {
     setIsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log('Login data:', data);
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
+    const res = await AuthLogin(data);
+
+    if (res.success && res.data) {
+      Alert.alert(
+        "موفقیت ✨",
+        res.data.message,
+        [
+          { text: "باشه", style: "default" }, 
+        ],
+      );
       setIsLoading(false);
+      //set in context 
+      //navigate user to home screen
+      navigation.navigate("Home");
+    } else {
+      setIsLoading(false);
+      Alert.alert("خطا", res.error || "ورود ناموفق بود",[
+        {text:"باشه", style:"destructive"}
+      ]);
     }
+    resetField("password")
+    resetField("username")
+
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <StatusBar style="auto" />
       <ScrollView
@@ -50,7 +78,6 @@ const LoginScreen = () => {
       >
         {/* لوگو و هدر */}
         <View style={styles.header}>
-      
           <RTLText style={styles.welcomeText}>خوش آمدید</RTLText>
           <RTLText style={styles.subtitle}>
             برای ورود لطفاً اطلاعات خود را وارد کنید
@@ -66,7 +93,7 @@ const LoginScreen = () => {
               control={control}
               name="username"
               rules={{
-                required: 'ایمیل الزامی است',
+                required: "ایمیل الزامی است",
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <View
@@ -89,7 +116,9 @@ const LoginScreen = () => {
               )}
             />
             {errors.username && (
-              <RTLText style={styles.errorText}>{errors.username.message}</RTLText>
+              <RTLText style={styles.errorText}>
+                {errors.username.message}
+              </RTLText>
             )}
           </View>
 
@@ -100,10 +129,10 @@ const LoginScreen = () => {
               control={control}
               name="password"
               rules={{
-                required: 'رمز عبور الزامی است',
+                required: "رمز عبور الزامی است",
                 minLength: {
                   value: 6,
-                  message: 'رمز عبور باید حداقل ۶ کاراکتر باشد',
+                  message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -127,20 +156,25 @@ const LoginScreen = () => {
                     onPress={() => setShowPassword(!showPassword)}
                   >
                     <RTLText style={styles.eyeIcon}>
-                      {showPassword ? '👁️' : '👁️‍🗨️'}
+                      {showPassword ? "👁️" : "👁️‍🗨️"}
                     </RTLText>
                   </TouchableOpacity>
                 </View>
               )}
             />
             {errors.password && (
-              <RTLText style={styles.errorText}>{errors.password.message}</RTLText>
+              <RTLText style={styles.errorText}>
+                {errors.password.message}
+              </RTLText>
             )}
           </View>
 
           {/* دکمه ورود */}
           <TouchableOpacity
-            style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
+            style={[
+              styles.loginButton,
+              isLoading && styles.loginButtonDisabled,
+            ]}
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
             disabled={isLoading}
@@ -159,8 +193,6 @@ const LoginScreen = () => {
             <View style={styles.dividerLine} />
           </View>
 
-         
-
           {/* ثبت نام */}
           <View style={styles.registerContainer}>
             <RTLText style={styles.registerText}>حساب کاربری ندارید؟</RTLText>
@@ -177,27 +209,27 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: 24,
     paddingVertical: 40,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 48,
   },
   logoContainer: {
     width: 90,
     height: 90,
     borderRadius: 45,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#007AFF",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 24,
-    shadowColor: '#007AFF',
+    shadowColor: "#007AFF",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -208,38 +240,38 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 28,
-    fontFamily: 'VasirBold',
-    color: '#1a1a1a',
+    fontFamily: "VasirBold",
+    color: "#1a1a1a",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    fontFamily: 'Vasir',
-    color: '#666',
+    fontFamily: "Vasir",
+    color: "#666",
   },
   form: {
-    width: '100%',
+    width: "100%",
   },
   inputGroup: {
     marginBottom: 20,
   },
   label: {
     fontSize: 14,
-    fontFamily: 'Vasir',
-    color: '#333',
+    fontFamily: "Vasir",
+    color: "#333",
     marginBottom: 8,
   },
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
     borderRadius: 12,
-    backgroundColor: '#f9f9f9',
-    overflow: 'hidden',
+    backgroundColor: "#f9f9f9",
+    overflow: "hidden",
   },
   inputWrapperError: {
-    borderColor: '#ff3b30',
+    borderColor: "#ff3b30",
     borderWidth: 1.5,
   },
   input: {
@@ -247,8 +279,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    fontFamily: 'Vasir',
-    color: '#333',
+    fontFamily: "Vasir",
+    color: "#333",
   },
   passwordInput: {
     flex: 1,
@@ -262,26 +294,26 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    fontFamily: 'Vasir',
-    color: '#ff3b30',
+    fontFamily: "Vasir",
+    color: "#ff3b30",
     marginTop: 6,
   },
   forgotButton: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginBottom: 24,
   },
   forgotText: {
     fontSize: 13,
-    fontFamily: 'Vasir',
-    color: '#007AFF',
+    fontFamily: "Vasir",
+    color: "#007AFF",
   },
   loginButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     borderRadius: 12,
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 24,
-    shadowColor: '#007AFF',
+    shadowColor: "#007AFF",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -291,40 +323,40 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   loginButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontFamily: 'VasirBold',
+    fontFamily: "VasirBold",
   },
   divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 24,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: "#e0e0e0",
   },
   dividerText: {
     marginHorizontal: 10,
     fontSize: 12,
-    fontFamily: 'Vasir',
-    color: '#999',
+    fontFamily: "Vasir",
+    color: "#999",
   },
   socialContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 12,
     marginBottom: 32,
   },
   socialButton: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f9f9f9',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f9f9f9",
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -335,24 +367,24 @@ const styles = StyleSheet.create({
   },
   socialText: {
     fontSize: 14,
-    fontFamily: 'Vasir',
-    color: '#333',
+    fontFamily: "Vasir",
+    color: "#333",
   },
   registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap",
   },
   registerText: {
     fontSize: 14,
-    fontFamily: 'Vasir',
-    color: '#666',
+    fontFamily: "Vasir",
+    color: "#666",
   },
   registerLink: {
     fontSize: 14,
-    fontFamily: 'VasirBold',
-    color: '#007AFF',
+    fontFamily: "VasirBold",
+    color: "#007AFF",
   },
 });
 
