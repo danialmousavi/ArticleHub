@@ -1,7 +1,10 @@
 // screens/LoginScreen.tsx
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator, I18nManager } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useForm, Controller } from 'react-hook-form';
+import { useState } from 'react';
+import RTLText from '../../components/RTLText';
+import RTLTextInput from '../../components/RTLTextInput';
 
 type FormData = {
   username: string;
@@ -9,105 +12,163 @@ type FormData = {
 };
 
 const LoginScreen = () => {
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       username: '',
       password: '',
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const onSubmit = async (data: FormData) => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log('Login data:', data);
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <StatusBar style="auto" />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        
-        {/* هدر */}
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* لوگو و هدر */}
         <View style={styles.header}>
-          <Text style={styles.title}>خوش آمدید</Text>
-          <Text style={styles.subtitle}>لطفاً وارد حساب کاربری خود شوید</Text>
+      
+          <RTLText style={styles.welcomeText}>خوش آمدید</RTLText>
+          <RTLText style={styles.subtitle}>
+            برای ورود لطفاً اطلاعات خود را وارد کنید
+          </RTLText>
         </View>
 
         {/* فرم */}
         <View style={styles.form}>
-          
-          {/* فیلد نام کاربری */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>نام کاربری</Text>
+          {/* فیلد ایمیل */}
+          <View style={styles.inputGroup}>
+            <RTLText style={styles.label}>نام کاربری</RTLText>
             <Controller
               control={control}
               name="username"
-              rules={{ required: 'نام کاربری الزامی است' }}
+              rules={{
+                required: 'ایمیل الزامی است',
+              }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={[styles.input, errors.username && styles.inputError]}
-                  placeholder="نام کاربری خود را وارد کنید"
-                  placeholderTextColor="#999"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
+                <View
+                  style={[
+                    styles.inputWrapper,
+                    errors.username && styles.inputWrapperError,
+                  ]}
+                >
+                  <RTLTextInput
+                    style={styles.input}
+                    placeholder="username"
+                    placeholderTextColor="#999"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
               )}
             />
             {errors.username && (
-              <Text style={styles.errorText}>{errors.username.message}</Text>
+              <RTLText style={styles.errorText}>{errors.username.message}</RTLText>
             )}
           </View>
 
           {/* فیلد رمز عبور */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>رمز عبور</Text>
+          <View style={styles.inputGroup}>
+            <RTLText style={styles.label}>رمز عبور</RTLText>
             <Controller
               control={control}
               name="password"
-              rules={{ 
+              rules={{
                 required: 'رمز عبور الزامی است',
-                minLength: { value: 6, message: 'رمز عبور باید حداقل ۶ کاراکتر باشد' }
+                minLength: {
+                  value: 6,
+                  message: 'رمز عبور باید حداقل ۶ کاراکتر باشد',
+                },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={[styles.input, errors.password && styles.inputError]}
-                  placeholder="رمز عبور خود را وارد کنید"
-                  placeholderTextColor="#999"
-                  secureTextEntry
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
+                <View
+                  style={[
+                    styles.inputWrapper,
+                    errors.password && styles.inputWrapperError,
+                  ]}
+                >
+                  <RTLTextInput
+                    style={[styles.input, styles.passwordInput]}
+                    placeholder="••••••"
+                    placeholderTextColor="#999"
+                    secureTextEntry={!showPassword}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeButton}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <RTLText style={styles.eyeIcon}>
+                      {showPassword ? '👁️' : '👁️‍🗨️'}
+                    </RTLText>
+                  </TouchableOpacity>
+                </View>
               )}
             />
             {errors.password && (
-              <Text style={styles.errorText}>{errors.password.message}</Text>
+              <RTLText style={styles.errorText}>{errors.password.message}</RTLText>
             )}
           </View>
 
           {/* دکمه ورود */}
-          <TouchableOpacity 
-            style={styles.loginButton} 
+          <TouchableOpacity
+            style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
+            disabled={isLoading}
           >
-            <Text style={styles.loginButtonText}>ورود</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <RTLText style={styles.loginButtonText}>ورود</RTLText>
+            )}
           </TouchableOpacity>
 
-          {/* لینک ثبت نام */}
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>حساب کاربری ندارید؟</Text>
-            <TouchableOpacity onPress={() => console.log('Go to register')}>
-              <Text style={styles.registerLink}> ثبت نام کنید</Text>
-            </TouchableOpacity>
+          {/* جداکننده */}
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <RTLText style={styles.dividerText}>یا</RTLText>
+            <View style={styles.dividerLine} />
           </View>
 
-        </View>
+         
 
+          {/* ثبت نام */}
+          <View style={styles.registerContainer}>
+            <RTLText style={styles.registerText}>حساب کاربری ندارید؟</RTLText>
+            <TouchableOpacity>
+              <RTLText style={styles.registerLink}> ثبت نام کنید</RTLText>
+            </TouchableOpacity>
+          </View>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -128,23 +189,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 48,
   },
-  title: {
+  logoContainer: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  logoText: {
+    fontSize: 45,
+  },
+  welcomeText: {
     fontSize: 28,
     fontFamily: 'VasirBold',
     color: '#1a1a1a',
     marginBottom: 8,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     fontFamily: 'Vasir',
     color: '#666',
-    textAlign: 'center',
   },
   form: {
     width: '100%',
   },
-  inputContainer: {
+  inputGroup: {
     marginBottom: 20,
   },
   label: {
@@ -152,37 +228,58 @@ const styles = StyleSheet.create({
     fontFamily: 'Vasir',
     color: '#333',
     marginBottom: 8,
-    textAlign: 'right',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
+    backgroundColor: '#f9f9f9',
+    overflow: 'hidden',
+  },
+  inputWrapperError: {
+    borderColor: '#ff3b30',
+    borderWidth: 1.5,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
+    flex: 1,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
     fontFamily: 'Vasir',
-    backgroundColor: '#f9f9f9',
-    textAlign: 'right',
+    color: '#333',
   },
-  inputError: {
-    borderColor: '#ff3b30',
-    borderWidth: 1.5,
+  passwordInput: {
+    flex: 1,
+  },
+  eyeButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  eyeIcon: {
+    fontSize: 20,
   },
   errorText: {
     fontSize: 12,
     fontFamily: 'Vasir',
     color: '#ff3b30',
     marginTop: 6,
-    marginRight: 4,
-    textAlign: 'right',
+  },
+  forgotButton: {
+    alignItems: 'flex-end',
+    marginBottom: 24,
+  },
+  forgotText: {
+    fontSize: 13,
+    fontFamily: 'Vasir',
+    color: '#007AFF',
   },
   loginButton: {
     backgroundColor: '#007AFF',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
-    marginTop: 10,
     marginBottom: 24,
     shadowColor: '#007AFF',
     shadowOffset: { width: 0, height: 4 },
@@ -190,10 +287,56 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
+  loginButtonDisabled: {
+    opacity: 0.7,
+  },
   loginButtonText: {
     color: '#fff',
     fontSize: 18,
     fontFamily: 'VasirBold',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#e0e0e0',
+  },
+  dividerText: {
+    marginHorizontal: 10,
+    fontSize: 12,
+    fontFamily: 'Vasir',
+    color: '#999',
+  },
+  socialContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 32,
+  },
+  socialButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f9f9f9',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  socialIcon: {
+    fontSize: 20,
+  },
+  socialText: {
+    fontSize: 14,
+    fontFamily: 'Vasir',
+    color: '#333',
   },
   registerContainer: {
     flexDirection: 'row',
@@ -205,7 +348,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Vasir',
     color: '#666',
-    textAlign: 'center',
   },
   registerLink: {
     fontSize: 14,

@@ -1,3 +1,4 @@
+// App.tsx
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, I18nManager } from 'react-native';
@@ -7,22 +8,21 @@ import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 
 export default function App() {
-
-    const [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     'Vasir': require('./assets/fonts/Vazir.ttf'),
     'VasirBold': require('./assets/fonts/Vazir-Bold.ttf'),
-
   });
- 
+
   useEffect(() => {
-    setTimeout(() => {
-      I18nManager.forceRTL(true);
-      I18nManager.allowRTL(true);
-    }, 100);
+    // فعال کردن RTL
+    I18nManager.allowRTL(true);
+    I18nManager.forceRTL(true);
   }, []);
-  if(!fontsLoaded){
-    <AppLoading/>
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
   }
+
   return (
     <>
       <StatusBar style="auto" />
