@@ -16,6 +16,7 @@
     "expo": "~54.0.34",
     "expo-app-loading": "^2.1.1",
     "expo-font": "^56.0.5",
+    "expo-linear-gradient": "~15.0.8",
     "expo-secure-store": "~15.0.8",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",

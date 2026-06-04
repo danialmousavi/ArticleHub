@@ -1,3 +1,2 @@
-// یک فایل config بسازید: src/config.ts
-export const API_URL = "http://192.168.178.226:4004/api";
-
+export const BASE_URL = 'http://192.168.178.226:4004';
+export const API_URL = `${BASE_URL}/api`;

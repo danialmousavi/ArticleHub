@@ -1,4 +1,3 @@
-// App.tsx
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, I18nManager } from 'react-native';

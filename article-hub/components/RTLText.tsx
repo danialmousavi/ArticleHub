@@ -1,4 +1,3 @@
-// components/RTLText.tsx
 import { Text, I18nManager, StyleSheet } from 'react-native';
 
 const RTLText = ({ style, children, ...props }: any) => {

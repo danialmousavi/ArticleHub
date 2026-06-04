@@ -1,4 +1,3 @@
-// components/RTLTextInput.tsx
 import { TextInput, I18nManager } from 'react-native';
 
 const RTLTextInput = (props: any) => {
