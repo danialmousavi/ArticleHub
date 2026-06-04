@@ -47,10 +47,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'right',
     writingDirection: 'rtl',
+    fontFamily:"VasirBold",
   },
   text: {
     fontSize: 16,
@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'right',
     writingDirection: 'rtl',
+    fontFamily:"Vasir"
+
   },
   card: {
     backgroundColor: '#f0f0f0',
@@ -67,15 +69,18 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'right',
     writingDirection: 'rtl',
+     fontFamily:"VasirBold",
+
   },
   cardText: {
     fontSize: 14,
     textAlign: 'right',
     writingDirection: 'rtl',
+    fontFamily:"Vasir"
+
   },
   button: {
     backgroundColor: '#007AFF',

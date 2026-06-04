@@ -17,6 +17,9 @@ const RootDrawer = () => {
       screenOptions={({ navigation }) => ({
         drawerPosition: 'right',
         headerTitleAlign: 'left',
+        headerTitleStyle: {
+          fontFamily: 'VasirBold', // اضافه شد - فونت تایتل هدر
+        },
         headerLeft: () => null,
         headerRight: () => (
           <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
@@ -27,7 +30,9 @@ const RootDrawer = () => {
           textAlign: 'right',
           writingDirection: 'rtl',
           fontSize: 16,
+          fontFamily:"VasirBold"
         },
+    
       })}
     >
       <Drawer.Screen name="خانه" component={HomeScreen} />
