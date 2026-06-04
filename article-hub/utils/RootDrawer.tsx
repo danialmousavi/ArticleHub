@@ -3,10 +3,12 @@ import HomeScreen from "../screens/HomeScreen";
 import ArticlesScreen from "../screens/ArticlesScreen";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import LoginScreen from "../screens/Auth/Login";
 
 type RootDrawerParamList = {
   خانه: undefined;
   مقالات: undefined;
+  ورود:undefined
 };
 
 const RootDrawer = () => {
@@ -37,6 +39,8 @@ const RootDrawer = () => {
     >
       <Drawer.Screen name="خانه" component={HomeScreen} />
       <Drawer.Screen name="مقالات" component={ArticlesScreen} />
+      <Drawer.Screen name="ورود" component={LoginScreen} />
+
     </Drawer.Navigator>
   );
 };
