@@ -1,5 +1,5 @@
 import HomeScreen from "../screens/HomeScreen";
-import ArticlesScreen from "../screens/ArticlesScreen";
+import ArticlesScreen from "../screens/article/ArticlesScreen";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { TouchableOpacity, Text, StyleSheet, I18nManager } from "react-native";
 import LoginScreen from "../screens/Auth/Login";

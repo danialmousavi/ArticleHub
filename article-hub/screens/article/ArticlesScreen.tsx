@@ -1,8 +1,8 @@
 import { View, Text, FlatList, Alert, ActivityIndicator, RefreshControl, StyleSheet } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
-import { getArticles } from "../services/article/ArticleService";
-import { ArticleType } from "../utils/types/Article";
-import ArticleCard from "../components/Article/ArticleCard";
+import { getArticles } from "../../services/article/ArticleService";
+import { ArticleType } from "../../utils/types/Article";
+import ArticleCard from "../../components/Article/ArticleCard";
 
 const ArticlesScreen = () => {
   const [loading, setLoading] = useState(true);
@@ -33,12 +33,7 @@ const ArticlesScreen = () => {
     loadArticles(true);
   };
 
-  const handleArticlePress = (article: ArticleType) => {
-    Alert.alert("مقاله", article.title, [
-      { text: "خواندن", onPress: () => console.log("رفتن به صفحه مقاله", article.id) },
-      { text: "بستن", style: "cancel" },
-    ]);
-  };
+
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -82,7 +77,6 @@ const ArticlesScreen = () => {
       renderItem={({ item }) => (
         <ArticleCard 
           article={item} 
-          onPress={handleArticlePress}
         />
       )}
       refreshControl={
