@@ -44,9 +44,9 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
   //press article card
   const handlePress = () => {
     console.log(article.id);
-    // navigation.navigate("ArticleDetail", {
-    //   articleId: article.id,
-    // });
+    navigation.navigate("ArticleDetail", {
+      articleId: article.id,
+    });
   };
   return (
     <TouchableOpacity
@@ -71,7 +71,6 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         </View>
       </View>
 
-      {/* بخش محتوا */}
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={2}>
           {article.title}
