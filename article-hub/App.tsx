@@ -1,15 +1,16 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, I18nManager } from 'react-native';
-import { useEffect } from 'react';
-import { useFonts } from 'expo-font';
-import AppLoading from 'expo-app-loading';
-import RootDrawer from './utils/navigation/RootDrawer';
+import { NavigationContainer } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, I18nManager } from "react-native";
+import { useEffect } from "react";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
+import RootDrawer from "./utils/navigation/RootDrawer";
+import { MainContextProvider } from "./utils/context/MainContext";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'Vasir': require('./assets/fonts/Vazir.ttf'),
-    'VasirBold': require('./assets/fonts/Vazir-Bold.ttf'),
+    Vasir: require("./assets/fonts/Vazir.ttf"),
+    VasirBold: require("./assets/fonts/Vazir-Bold.ttf"),
   });
 
   useEffect(() => {
@@ -25,9 +26,11 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <NavigationContainer>
-        <RootDrawer />
-      </NavigationContainer>
+      <MainContextProvider>
+        <NavigationContainer>
+          <RootDrawer />
+        </NavigationContainer>
+      </MainContextProvider>
     </>
   );
 }
@@ -35,8 +38,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

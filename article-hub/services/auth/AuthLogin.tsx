@@ -1,6 +1,6 @@
 
 import { API_URL } from "../../utils/config";
-import { saveToken } from "../../utils/secureStorage";
+import { getToken, saveToken } from "../../utils/secureStorage";
 import { LoginType, SuccessLogin } from "../../utils/types/Auth";
 
 type LoginResponse = {
@@ -9,6 +9,17 @@ type LoginResponse = {
   error?: string;
 };
 
+type ValidateTokenResponse = {
+  success: boolean;
+  message: string;
+  data?: {
+      id: string;
+      username: string;
+      email: string;
+      role: string;
+      createdAt: string;
+    };
+  };
 export const AuthLogin = async (data: LoginType): Promise<LoginResponse> => {
   try {
     const res = await fetch(`${API_URL}/auth/login`, {
@@ -36,3 +47,44 @@ export const AuthLogin = async (data: LoginType): Promise<LoginResponse> => {
 };
 
 
+export const validateToken = async (): Promise<ValidateTokenResponse> => {
+  try {
+    const token = await getToken();
+    
+    if (!token) {
+      return {
+        success: false,
+        message: "توکن یافت نشد",
+      };
+    }
+
+    const res = await fetch(`${API_URL}/auth/profile`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    
+    if (res.status === 200) {
+      return {
+        success: true,
+        message: "توکن معتبر است",
+        data: data,
+      };
+    } else {
+      return {
+        success: false,
+        message: data.message || "توکن نامعتبر است",
+      };
+    }
+  } catch (error) {
+    console.error("Validate token error:", error);
+    return {
+      success: false,
+      message: "خطا در اتصال به سرور",
+    };
+  }
+};

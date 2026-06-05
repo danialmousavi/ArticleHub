@@ -2,10 +2,13 @@
 import { View, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import RTLText from '../components/RTLText';
+import { useContext } from 'react';
+import { MainContext } from '../utils/context/MainContext';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
+  const context=useContext(MainContext)
   // دیتای تستی برای مقالات
   const articles = [
     { id: 1, title: 'آموزش React Native', description: 'یادگیری React Native از صفر تا صد', image: '📱' },
@@ -31,7 +34,7 @@ const HomeScreen = () => {
         <View style={styles.header}>
           <View>
             <RTLText style={styles.greeting}>سلام 👋</RTLText>
-            <RTLText style={styles.userName}>کاربر عزیز</RTLText>
+            <RTLText style={styles.userName}>کاربر عزیز {context?.loginUser?context.user?.username:""}</RTLText>
           </View>
           <TouchableOpacity style={styles.profileButton}>
             <RTLText style={styles.profileIcon}>👤</RTLText>

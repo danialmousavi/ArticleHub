@@ -11,12 +11,13 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useForm, Controller } from "react-hook-form";
-import {  useState } from "react";
+import {  useContext, useState } from "react";
 import RTLText from "../../components/RTLText";
 import RTLTextInput from "../../components/RTLTextInput";
 import { LoginType } from "../../utils/types/Auth";
 import { AuthLogin } from "../../services/auth/AuthLogin";
 import { useNavigation } from '@react-navigation/native';
+import { MainContext } from "../../utils/context/MainContext";
 type FormData = {
   username: string;
   password: string;
@@ -27,7 +28,7 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigation=useNavigation<any>();
 
-
+  const context = useContext(MainContext); 
   const {
     control,
     handleSubmit,
@@ -39,32 +40,35 @@ const LoginScreen = () => {
       password: "",
     },
   });
-  const onSubmit = async (data: LoginType) => {
-    setIsLoading(true);
-    const res = await AuthLogin(data);
+const onSubmit = async (data: LoginType) => {
+  setIsLoading(true);
+  const res = await AuthLogin(data);
 
-    if (res.success && res.data) {
-      Alert.alert(
-        "موفقیت ✨",
-        res.data.message,
-        [
-          { text: "باشه", style: "default" }, 
-        ],
-      );
-      setIsLoading(false);
-      //set in context 
-      //navigate user to home screen
-      navigation.navigate("Home");
-    } else {
-      setIsLoading(false);
-      Alert.alert("خطا", res.error || "ورود ناموفق بود",[
-        {text:"باشه", style:"destructive"}
-      ]);
-    }
-    resetField("password")
-    resetField("username")
-
-  };
+  if (res.success && res.data) {
+   
+    context?.loginUser(res.data.user,res.data.token); 
+    
+    Alert.alert(
+      "موفقیت ✨",
+      res.data.message,
+      [
+        { 
+          text: "باشه", 
+          style: "default",
+          onPress: () => navigation.navigate("Home")
+        }
+      ]
+    );
+  } else {
+    Alert.alert("خطا ❌", res.error || "ورود ناموفق بود", [
+      { text: "باشه", style: "destructive" }
+    ]);
+  }
+  
+  setIsLoading(false);
+  resetField("password");
+  resetField("username");
+};
 
   return (
     <KeyboardAvoidingView
