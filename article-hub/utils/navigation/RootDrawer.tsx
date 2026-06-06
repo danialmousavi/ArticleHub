@@ -1,4 +1,3 @@
-// src/navigation/RootDrawer.tsx
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { TouchableOpacity, Text, StyleSheet, I18nManager } from "react-native";
 import HomeScreen from "../../screens/HomeScreen";
@@ -6,13 +5,15 @@ import ArticlesScreen from "../../screens/article/ArticlesScreen";
 import ArticleDetailScreen from "../../screens/article/ArticleDetailScreen";
 import LoginScreen from "../../screens/Auth/Login";
 import CategoriesScreen from "../../screens/categories/CategoriesScreen";
+import CategoryDetailScreen from "../../screens/categories/CategoryDetailScreen";
 
 export type RootDrawerParamList = {
   Home: undefined;
   Articles: undefined;
-  ArticleDetail: { articleId: string };  // اضافه شد
+  ArticleDetail: { articleId: string }; 
   Login: undefined;
   Categories:undefined
+  CategoryDetail:undefined
 };
 
 const RootDrawer = () => {
@@ -71,7 +72,6 @@ const RootDrawer = () => {
           drawerLabel: "🧙🏻‍♂️ دسته بندی ها",
         }} 
       />
-      {/* صفحه جزئیات مقاله - مخفی از منو 🔥 */}
       <Drawer.Screen 
         name="ArticleDetail" 
         component={ArticleDetailScreen}
@@ -81,7 +81,15 @@ const RootDrawer = () => {
           drawerItemStyle: { height: 0, display: 'none' },  // کاملاً مخفی
         }} 
       />
-      
+      <Drawer.Screen 
+        name="CategoryDetail" 
+        component={CategoryDetailScreen}
+        options={{
+          title: "مقالات دسته بندی",
+          drawerLabel: () => null,  // مخفی کردن از منو
+          drawerItemStyle: { height: 0, display: 'none' },  // کاملاً مخفی
+        }} 
+      />
       <Drawer.Screen 
         name="Login" 
         component={LoginScreen} 

@@ -1,4 +1,3 @@
-// src/components/Category/CategoryCard.tsx
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import React from 'react';
 import { CategoryType } from '../../utils/types/Category';
@@ -87,8 +86,6 @@ const CategoryCard = ({ category, onPress, variant = 'grid' }: CategoryCardProps
         {category.description}
       </Text>
       <View style={styles.statsContainer}>
-        <Text style={styles.statsText}>۱۲ مقاله</Text>
-        <Text style={styles.arrowIcon}>›</Text>
       </View>
     </TouchableOpacity>
   );

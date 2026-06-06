@@ -1,4 +1,3 @@
-// src/screens/category/CategoriesScreen.tsx
 import { View, Text, FlatList, Alert, ActivityIndicator, RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +6,7 @@ import { getCategories } from '../../services/category/CategoryService';
 import CategoryCard from '../../components/category/CategoryCard';
 
 const CategoriesScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [categories, setCategories] = useState<CategoryType[]>([]);
@@ -38,9 +37,11 @@ const CategoriesScreen = () => {
   };
 
   const handleCategoryPress = (category: CategoryType) => {
-    Alert.alert("دسته‌بندی", `نمایش مقالات ${category.title}`, [
-      { text: "مشاهده", onPress: () => console.log("Navigate to", category.id) }
-    ]);
+     navigation.navigate('CategoryDetail', {
+      id: category.id,
+      title: category.title,
+      description: category.description,
+    });
   };
 
   const renderHeader = () => (
