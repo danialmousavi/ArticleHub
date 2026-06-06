@@ -4,6 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { getArticleDetail } from "../../services/article/ArticleService";
 import { ArticleType } from "../../utils/types/Article";
 import { BASE_URL } from "../../utils/config";
+import CommentSection from "../../components/Comment/CommentSection"; // ← همین کافیه
 
 const { width } = Dimensions.get('window');
 
@@ -34,7 +35,6 @@ const ArticleDetailScreen = () => {
     loadArticleDetail();
   }, [articleId]);
 
-
 // back to articles screen when back button clicked by user
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -44,7 +44,6 @@ const ArticleDetailScreen = () => {
 
     return () => backHandler.remove();
   }, [navigation]);
-
 
   //change image url
   const getImageUrl = () => {
@@ -63,7 +62,8 @@ const ArticleDetailScreen = () => {
         day: 'numeric'
       })
     : '';
-//handle loading ...
+    
+  //handle loading ...
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -94,7 +94,6 @@ const ArticleDetailScreen = () => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.contentContainer}
     >
-      {/* تصویر هدر */}
       <View style={styles.imageContainer}>
         {!imageError && imageUrl ? (
           <Image 
@@ -114,12 +113,9 @@ const ArticleDetailScreen = () => {
         </View>
       </View>
 
-      {/* محتوای مقاله */}
       <View style={styles.content}>
-        {/* عنوان */}
         <Text style={styles.title}>{article.title}</Text>
 
-        {/* اطلاعات نویسنده و تاریخ */}
         <View style={styles.metaContainer}>
           <View style={styles.metaItem}>
             <View style={styles.avatar}>
@@ -133,20 +129,21 @@ const ArticleDetailScreen = () => {
           </View>
         </View>
 
-        {/* خط جداکننده */}
         <View style={styles.divider} />
 
-        {/* متن اصلی مقاله */}
         <Text style={styles.body}>
           {article.content?.replace(/<[^>]*>/g, '')}
         </Text>
 
-        {/* فوتر */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>📖 مطالعه این مقاله</Text>
           <Text style={styles.readTime}>زمان مطالعه: ۵ دقیقه</Text>
         </View>
       </View>
+
+      {/* comment section */}
+      <CommentSection articleId={articleId} />
+      
     </ScrollView>
   );
 };

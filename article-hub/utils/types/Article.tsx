@@ -7,3 +7,10 @@ export type ArticleType = {
   author: string;
   createdAt: string;
 };
+export type ArticleCommentType = {
+  id: string;
+  content:string
+  articleId: string
+  author: string
+  createdAt: string
+};

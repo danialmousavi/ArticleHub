@@ -1,5 +1,5 @@
 import { API_URL, BASE_URL } from "../../utils/config";
-import { ArticleType } from "../../utils/types/Article";
+import { ArticleCommentType, ArticleType } from "../../utils/types/Article";
 type GetArticlesResponse = {
   success: boolean;
   message: string;
@@ -56,3 +56,5 @@ export const getArticleDetail = async (
     };
   }
 };
+
+
