@@ -5,12 +5,14 @@ import HomeScreen from "../../screens/HomeScreen";
 import ArticlesScreen from "../../screens/article/ArticlesScreen";
 import ArticleDetailScreen from "../../screens/article/ArticleDetailScreen";
 import LoginScreen from "../../screens/Auth/Login";
+import CategoriesScreen from "../../screens/categories/CategoriesScreen";
 
 export type RootDrawerParamList = {
   Home: undefined;
   Articles: undefined;
   ArticleDetail: { articleId: string };  // اضافه شد
   Login: undefined;
+  Categories:undefined
 };
 
 const RootDrawer = () => {
@@ -44,7 +46,6 @@ const RootDrawer = () => {
         },
       })}
     >
-      {/* صفحه خانه - نمایش داده میشه */}
       <Drawer.Screen 
         name="Home" 
         component={HomeScreen} 
@@ -54,7 +55,6 @@ const RootDrawer = () => {
         }} 
       />
       
-      {/* صفحه مقالات - نمایش داده میشه */}
       <Drawer.Screen 
         name="Articles" 
         component={ArticlesScreen}
@@ -63,7 +63,14 @@ const RootDrawer = () => {
           drawerLabel: "📖 مقالات",
         }} 
       />
-      
+      <Drawer.Screen 
+        name="Categories" 
+        component={CategoriesScreen}
+        options={{
+          title: "دسته بندی ها",
+          drawerLabel: "🧙🏻‍♂️ دسته بندی ها",
+        }} 
+      />
       {/* صفحه جزئیات مقاله - مخفی از منو 🔥 */}
       <Drawer.Screen 
         name="ArticleDetail" 
@@ -75,7 +82,6 @@ const RootDrawer = () => {
         }} 
       />
       
-      {/* صفحه ورود - نمایش داده میشه */}
       <Drawer.Screen 
         name="Login" 
         component={LoginScreen} 
