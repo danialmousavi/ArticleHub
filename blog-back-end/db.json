@@ -122,6 +122,22 @@
       "password": "$2b$10$.9CJQq727dt.rPA4Yu38PefRdu8zuPbvu.hvJnv/tT0n9eMgwTTYC",
       "role": "admin",
       "createdAt": "2026-06-02T18:43:54.041Z"
+    },
+    {
+      "id": "_L0I23YHoe",
+      "username": "test",
+      "email": "test@gamil.com",
+      "password": "$2b$10$NaOv/cku4nW.hHDAXEHfjOI5.acsD8WE5OwrvACdc3AMPrnwp9Tei",
+      "role": "user",
+      "createdAt": "2026-06-07T09:15:09.854Z"
+    },
+    {
+      "id": "OKrwrKEiYY",
+      "username": "mmd",
+      "email": "mmd@gmail.com",
+      "password": "$2b$10$i0iWlQ913nq1K9vRFuDI5.BvhVsI6JpTA0i1hTJhjngKl7xZToyn2",
+      "role": "user",
+      "createdAt": "2026-06-07T09:21:10.464Z"
     }
   ]
 }

@@ -11,64 +11,67 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useForm, Controller } from "react-hook-form";
-import {  useContext, useState } from "react";
+import { useContext, useState } from "react";
 import RTLText from "../../components/RTLText";
 import RTLTextInput from "../../components/RTLTextInput";
-import { LoginType } from "../../utils/types/Auth";
+import { RegisterType } from "../../utils/types/Auth";
 import { AuthLogin } from "../../services/auth/AuthLogin";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { MainContext } from "../../utils/context/MainContext";
+import { AuthRegister } from "../../services/auth/AuthRegister";
 type FormData = {
   username: string;
   password: string;
+  email: string;
 };
 
 const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigation=useNavigation<any>();
+  const navigation = useNavigation<any>();
 
-  const context = useContext(MainContext); 
+  const context = useContext(MainContext);
   const {
     control,
     handleSubmit,
     formState: { errors },
-    resetField
+    resetField,
   } = useForm<FormData>({
     defaultValues: {
       username: "",
+      email: "",
       password: "",
     },
   });
-const onSubmit = async (data: LoginType) => {
-  setIsLoading(true);
-  const res = await AuthLogin(data);
+  const onSubmit = async (data: RegisterType) => {
+    const newRegister = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      role: "user",
+    };
+    setIsLoading(true);
+    const res = await AuthRegister(newRegister);
 
-  if (res.success && res.data) {
-   
-    context?.loginUser(res.data.user,res.data.token); 
-    
-    Alert.alert(
-      "موفقیت ✨",
-      res.data.message,
-      [
-        { 
-          text: "باشه", 
+    if (res.success && res.data) {
+      Alert.alert("موفقیت ✨", res.data.message, [
+        {
+          text: "باشه",
           style: "default",
-          onPress: () => navigation.navigate("Home")
-        }
-      ]
-    );
-  } else {
-    Alert.alert("خطا ❌", res.error || "ورود ناموفق بود", [
-      { text: "باشه", style: "destructive" }
-    ]);
-  }
-  
-  setIsLoading(false);
-  resetField("password");
-  resetField("username");
-};
+          onPress: () => navigation.navigate("Login"),
+        },
+      ]);
+    } else {
+      Alert.alert("خطا ❌", res.error || "ورود ناموفق بود", [
+        { text: "باشه", style: "destructive" },
+      ]);
+    }
+
+    setIsLoading(false);
+    resetField("password");
+    resetField("username");
+    resetField("email");
+  };
 
   return (
     <KeyboardAvoidingView
@@ -84,7 +87,7 @@ const onSubmit = async (data: LoginType) => {
         <View style={styles.header}>
           <RTLText style={styles.welcomeText}>خوش آمدید</RTLText>
           <RTLText style={styles.subtitle}>
-            برای ورود لطفاً اطلاعات خود را وارد کنید
+            برای ثبت نام لطفاً اطلاعات خود را وارد کنید
           </RTLText>
         </View>
 
@@ -95,7 +98,7 @@ const onSubmit = async (data: LoginType) => {
               control={control}
               name="username"
               rules={{
-                required: "ایمیل الزامی است",
+                required: "نام اکاربری الزامی است",
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <View
@@ -123,7 +126,45 @@ const onSubmit = async (data: LoginType) => {
               </RTLText>
             )}
           </View>
-
+          {/* email */}
+          <View style={styles.inputGroup}>
+            <RTLText style={styles.label}>ایمیل</RTLText>
+            <Controller
+              control={control}
+              name="email"
+              rules={{
+                required: "ایمیل الزامی است",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "فرمت ایمیل صحیح نیست (مثال: name@example.com)",
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <View
+                  style={[
+                    styles.inputWrapper,
+                    errors.email && styles.inputWrapperError,
+                  ]}
+                >
+                  <RTLTextInput
+                    style={styles.input}
+                    placeholder="example@domain.com"
+                    placeholderTextColor="#999"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType="email-address"
+                  />
+                </View>
+              )}
+            />
+            {errors.email && (
+              <RTLText style={styles.errorText}>{errors.email.message}</RTLText>
+            )}
+          </View>
+          {/* password */}
           <View style={styles.inputGroup}>
             <RTLText style={styles.label}>رمز عبور</RTLText>
             <Controller
@@ -182,7 +223,7 @@ const onSubmit = async (data: LoginType) => {
             {isLoading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <RTLText style={styles.loginButtonText}>ورود</RTLText>
+              <RTLText style={styles.loginButtonText}>ثبت نام</RTLText>
             )}
           </TouchableOpacity>
 
@@ -194,9 +235,9 @@ const onSubmit = async (data: LoginType) => {
 
           {/* ثبت نام */}
           <View style={styles.registerContainer}>
-            <RTLText style={styles.registerText}>حساب کاربری ندارید؟</RTLText>
-            <TouchableOpacity onPress={()=>navigation.navigate("Register")}>
-              <RTLText style={styles.registerLink}> ثبت نام کنید</RTLText>
+            <RTLText style={styles.registerText}>حساب کاربری دارید؟</RTLText>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <RTLText style={styles.registerLink}> ورود کنید</RTLText>
             </TouchableOpacity>
           </View>
         </View>

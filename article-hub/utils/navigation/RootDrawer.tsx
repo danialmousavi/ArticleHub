@@ -6,6 +6,7 @@ import ArticleDetailScreen from "../../screens/article/ArticleDetailScreen";
 import LoginScreen from "../../screens/Auth/Login";
 import CategoriesScreen from "../../screens/categories/CategoriesScreen";
 import CategoryDetailScreen from "../../screens/categories/CategoryDetailScreen";
+import Register from "../../screens/Auth/Register";
 
 export type RootDrawerParamList = {
   Home: undefined;
@@ -14,6 +15,7 @@ export type RootDrawerParamList = {
   Login: undefined;
   Categories:undefined
   CategoryDetail:undefined
+  Register:undefined
 };
 
 const RootDrawer = () => {
@@ -97,6 +99,15 @@ const RootDrawer = () => {
           title: "ورود",
           drawerLabel: "🔑 ورود",
         }}
+      />
+      <Drawer.Screen 
+        name="Register" 
+        component={Register}
+        options={{
+          title: "ثبت نام",
+          drawerLabel: () => null,  // مخفی کردن از منو
+          drawerItemStyle: { height: 0, display: 'none' },  // کاملاً مخفی
+        }} 
       />
     </Drawer.Navigator>
   );
