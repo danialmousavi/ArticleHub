@@ -78,6 +78,16 @@ yarn install
 
 # 5. اجرای پروژه
 npx expo start
+
+# 5. اجرا پروژه بک اند:
+cd blog-back-end
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run start
+
 ```
 ## 📝 نکات فنی
 
